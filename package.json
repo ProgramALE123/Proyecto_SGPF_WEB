@@ -6,7 +6,7 @@
     "node": ">=22 <25"
   },
   "scripts": {
-    "install:all": "npm ci --prefix SGPF.backend-main && npm ci --prefix SGPF_FRONTEND",
+    "install:all": "npm ci --prefix SGPF.backend-main && npm ci --include=dev --prefix SGPF_FRONTEND",
     "build": "npm run build --prefix SGPF_FRONTEND",
     "start": "npm start --prefix SGPF.backend-main",
     "db:install": "npm run db:install --prefix SGPF.backend-main"
