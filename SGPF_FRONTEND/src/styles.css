@@ -69,3 +69,72 @@ button:active, .btn:active { transform: scale(.97); }
   color: var(--primary-gold);
   margin: 0;
 }
+
+/* Adaptación general para teléfonos */
+@media (max-width: 575.98px) {
+  html, body { width: 100%; overflow-x: hidden; }
+  body { font-size: 14px; }
+
+  .container,
+  .container-fluid,
+  .jugadores-container,
+  .entrenadores-container,
+  .usuarios-container,
+  .partidos-container,
+  .alineaciones-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px !important;
+  }
+
+  .jugadores-container .header,
+  .entrenadores-container .header,
+  .usuarios-container .header,
+  .partidos-container .header,
+  .alineaciones-container .header,
+  .container-fluid > .card:first-child .card-body {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px;
+    padding: 16px !important;
+  }
+
+  .header h1, .page-title, h2 { font-size: 1.35rem !important; }
+  .header p { font-size: .85rem; margin-bottom: 0; }
+  .header > button,
+  .header-acciones,
+  .container-fluid > .card:first-child .btn { width: 100%; }
+  .header-acciones { display: grid !important; grid-template-columns: 1fr; gap: 8px; }
+  .header-acciones .btn { width: 100%; }
+
+  .formulario-card,
+  .toolbar-card,
+  .table-card { padding: 16px !important; border-radius: 12px !important; }
+  .toolbar-card .input-group { max-width: none !important; width: 100%; }
+  .botones-formulario { display: grid !important; grid-template-columns: 1fr; gap: 8px; }
+  .botones-formulario .btn { width: 100%; margin: 0 !important; }
+
+  .jugadores-grid,
+  .entrenadores-grid,
+  .partidos-grid,
+  .alineaciones-guardadas {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+  .jugador-card, .entrenador-card, .partido-card, .ali-card { min-width: 0; padding-left: 14px; padding-right: 14px; }
+
+  .table-responsive { border-radius: 10px; }
+  .table-responsive table { min-width: 680px; }
+  .modal-dialog { margin: .6rem; }
+  .modal-content { max-height: calc(100dvh - 1.2rem); overflow-y: auto; }
+
+  .alerta-partido { padding: 13px !important; gap: 10px !important; }
+  .alerta-partido .pulso { display: none; }
+  .alerta-partido strong { font-size: 15px !important; }
+  .disponibilidad .card-body { flex-direction: column; align-items: stretch !important; gap: 12px !important; }
+  .disponibilidad .btn { width: 100%; }
+
+  .resumen-plantilla { gap: 10px !important; padding: 12px !important; }
+  .resumen-plantilla div { flex: 1; min-width: 0 !important; }
+  .resumen-plantilla label { min-width: 0 !important; }
+}

@@ -179,3 +179,11 @@
   background-color: #d4a843 !important;
   color: #000 !important;
 }
+
+@media (max-width: 575.98px) {
+  .mobile-topbar { padding: 0 12px; box-shadow: 0 3px 12px rgba(0,0,0,.2); }
+  .mobile-topbar span { font-size: .95rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .offcanvas { width: min(86vw, 300px) !important; max-width: none; }
+  .sidebar-brand { padding: 1rem; }
+  .nav-link { min-height: 48px; padding: .78rem 1rem; font-size: .95rem; }
+}

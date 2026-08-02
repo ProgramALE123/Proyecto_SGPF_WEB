@@ -16,6 +16,14 @@
   border: 1px solid var(--border-color);
 }
 
+@media (max-width: 575.98px) {
+  .login-wrapper { align-items: flex-start; padding: 20px 12px; padding-top: max(28px, env(safe-area-inset-top)); }
+  .login-card { max-width: none; padding: 1.6rem 1.2rem; border-radius: 16px; }
+  .logo-circle { width: 60px; height: 60px; }
+  .login-header h2 { font-size: 1.45rem; }
+  .form-control, .btn { min-height: 46px; }
+}
+
 .login-header {
   text-align: center;
   margin-bottom: 2rem;

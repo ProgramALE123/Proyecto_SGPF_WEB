@@ -813,6 +813,33 @@ label {
     .banquillo { position: static; }
 }
 
+@media (max-width: 575.98px) {
+    .alineaciones-container { padding: 12px; }
+    .controles-card { padding: 14px; }
+    .controles-grid { grid-template-columns: 1fr !important; gap: 10px; }
+    .zona-editor { display: flex; flex-direction: column; gap: 12px; }
+    .cancha-wrapper { width: 100%; overflow: hidden; border-radius: 10px; }
+    .cancha { min-height: 520px; aspect-ratio: auto; border-radius: 10px; }
+    .slot { width: 48px; height: 48px; }
+    .slot-label { font-size: 8px; }
+    .jugador-token { width: 46px; height: 46px; }
+    .jugador-foto { width: 40px; height: 40px; }
+    .jugador-iniciales { width: 40px; height: 40px; font-size: 10px; }
+    .token-info { bottom: -20px; padding: 2px 4px; max-width: 66px; }
+    .token-nombre { font-size: 8px; max-width: 58px; }
+    .token-numero { font-size: 8px; }
+    .token-posicion { top: -15px; font-size: 7px; padding: 1px 4px; }
+    .banquillo { width: 100%; max-height: none; }
+    .banquillo-lista { max-height: 340px; }
+    .banquillo-jugador { min-height: 58px; }
+    .cobertura-banca { grid-template-columns: repeat(2, 1fr); }
+    .ali-card-top, .ali-card-footer { flex-wrap: wrap; gap: 8px; }
+    .ali-card-footer .btn { flex: 1; min-width: 120px; }
+    .ali-vs { line-height: 1.45; }
+    .ali-torneo { display: block; margin-left: 0; width: 100%; }
+    .mini-cancha-wrapper { padding: 10px; }
+}
+
 .alerta-posicion { max-width: 1480px; margin: 0 auto 16px; font-weight: 600; }
 .jugador-token.fuera-posicion { border-color: #ffc107; box-shadow: 0 0 0 4px rgba(255,193,7,.35), 0 3px 10px rgba(0,0,0,.45); }
 .token-posicion { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: #fff; background: #123d25; border: 1px solid rgba(255,255,255,.65); border-radius: 10px; padding: 1px 6px; font-size: 9px; font-weight: 800; z-index: 22; }
