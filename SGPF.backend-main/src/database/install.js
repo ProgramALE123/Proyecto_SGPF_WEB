@@ -20,9 +20,31 @@ const scripts = [
 ];
 
 try {
+  const existingSchema = await pool.query("SELECT to_regclass('public.roles') AS roles_table");
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS sgpf_migrations (
+      script VARCHAR(100) PRIMARY KEY,
+      aplicado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `);
+
+  const migrationCount = await pool.query('SELECT COUNT(*)::int AS total FROM sgpf_migrations');
+  if (existingSchema.rows[0].roles_table && migrationCount.rows[0].total === 0) {
+    for (const script of scripts) {
+      await pool.query('INSERT INTO sgpf_migrations (script) VALUES ($1) ON CONFLICT DO NOTHING', [script]);
+    }
+    console.log('Base de datos existente registrada; no se duplicaron datos');
+  }
+
   for (const script of scripts) {
+    const applied = await pool.query('SELECT 1 FROM sgpf_migrations WHERE script = $1', [script]);
+    if (applied.rowCount) {
+      console.log(`Base de datos: ${script} ya estaba aplicado`);
+      continue;
+    }
     const sql = await fs.readFile(path.join(directory, script), 'utf8');
     await pool.query(sql);
+    await pool.query('INSERT INTO sgpf_migrations (script) VALUES ($1)', [script]);
     console.log(`Base de datos: ${script} aplicado`);
   }
 } catch (error) {
