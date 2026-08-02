@@ -53,9 +53,11 @@ export const createApp = ({ authRequired = false } = {}) => {
     next();
   });
 
-  app.get('/', (req, res) => {
-    res.json({ mensaje: 'API REST SGPF con Express y PostgreSQL funcionando', arquitectura: 'routes, controllers, services, repositories, database' });
-  });
+  if (process.env.NODE_ENV !== 'production') {
+    app.get('/', (req, res) => {
+      res.json({ mensaje: 'API REST SGPF con Express y PostgreSQL funcionando', arquitectura: 'routes, controllers, services, repositories, database' });
+    });
+  }
 
   app.get('/health', (req, res) => res.json({ status: 'ok' }));
   app.get('/ready', async (req, res, next) => {
