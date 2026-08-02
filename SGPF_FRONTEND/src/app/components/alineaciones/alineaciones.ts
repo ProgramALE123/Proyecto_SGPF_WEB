@@ -391,9 +391,12 @@ export class Alineaciones implements OnInit {
     };
 
     this.guardando = true;
-    if (this.editandoId !== null) {
-      const original = this.alineaciones.find(a => a.id === this.editandoId);
-      this.alineacionesService.editar(this.editandoId, original?.version ?? 1, {
+    const alineacionDelPartido = this.alineaciones.find(a => a.partido?.id === this.partidoActual?.id);
+    const idParaEditar = this.editandoId ?? alineacionDelPartido?.id ?? null;
+
+    if (idParaEditar !== null) {
+      const original = this.alineaciones.find(a => a.id === idParaEditar);
+      this.alineacionesService.editar(idParaEditar, original?.version ?? 1, {
         ...datos, fechaCreacion: original?.fechaCreacion ?? datos.fechaCreacion,
       }).subscribe({ next: () => this.finalizarGuardado(), error: error => this.mostrarErrorGuardado(error) });
     } else {
@@ -463,8 +466,8 @@ export class Alineaciones implements OnInit {
     const asignados = new Map<JugadorEnCancha, number>();
     for (const jec of alineacion.jugadoresEnCancha) {
       const idx = jec.slotIndice;
-      if (idx !== undefined && idx >= 0 && idx < slots.length && !usados.has(idx)) {
-        usados.add(idx); asignados.set(jec, idx);
+      if (Number.isInteger(idx) && idx! >= 0 && idx! < slots.length && !usados.has(idx!)) {
+        usados.add(idx!); asignados.set(jec, idx!);
       }
     }
     for (const jec of alineacion.jugadoresEnCancha) {
