@@ -142,7 +142,13 @@ export class Alineaciones implements OnInit {
 
   // ─── Partidos PROGRAMADOS (sin resultado) — para el editor ───
   get partidosProgramados(): Partido[] {
-    return this.partidos.filter(p => p.resultado.trim() === '').sort((a, b) => a.fecha.localeCompare(b.fecha));
+    return this.partidos
+      .filter(p => p.resultado.trim() === '')
+      .filter(p => {
+        const existente = this.alineaciones.find(a => a.partido?.id === p.id);
+        return !existente || existente.id === this.editandoId;
+      })
+      .sort((a, b) => a.fecha.localeCompare(b.fecha));
   }
 
   // ─── Jugadores disponibles (no en cancha) ─────────────────
@@ -430,11 +436,11 @@ export class Alineaciones implements OnInit {
   editarAlineacion(alineacion: Alineacion): void {
     this.formacionSeleccionada = alineacion.formacion;
     this.jugadoresEnCancha = alineacion.jugadoresEnCancha.map(j => ({ ...j }));
+    this.editandoId = alineacion.id;
     const pIdx = this.partidosProgramados.findIndex(
       p => p.rival === alineacion.partido?.rival && p.fecha === alineacion.partido?.fecha
     );
     this.partidoSeleccionadoIdx = pIdx;
-    this.editandoId = alineacion.id;
     this.vista = 'editor';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
