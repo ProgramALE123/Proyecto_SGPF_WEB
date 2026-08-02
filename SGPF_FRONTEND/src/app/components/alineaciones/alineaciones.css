@@ -793,6 +793,13 @@ label {
 .no-convocables { padding:9px 12px; background:#fff4dc; color:#775a00; font-size:10px; line-height:1.5; border-bottom:1px solid #f0dfb2; }.no-convocables i{color:#c0392b;margin-right:4px}.no-convocables span{display:inline-block;margin-right:4px}
 .cobertura-banca{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:#f7faf8;border-bottom:1px solid #e7ece8}.cobertura-banca span{text-align:center;background:#dff5e8;color:#126337;border-radius:10px;padding:3px;font-size:9px;font-weight:800}.cobertura-banca span.sin-cobertura{background:#fde2e2;color:#a52218}
 
+.ayuda-tactil { display: none; }
+.banquillo-jugador.seleccionado { background:#fff5cf; box-shadow:inset 0 0 0 2px #d4a843; transform:translateX(-2px); }
+.jugador-token.seleccionado { box-shadow:0 0 0 5px rgba(255,216,86,.65),0 4px 14px rgba(0,0,0,.5); }
+.slot.slot-destino { cursor:pointer; }
+.slot.slot-destino .slot-vacio { animation:slotPulse 1.1s ease-in-out infinite; background:rgba(255,255,255,.22); }
+@keyframes slotPulse { 50% { transform:scale(1.12); box-shadow:0 0 0 7px rgba(255,255,255,.15); } }
+
 /* Vista de trabajo compacta y legible en monitores grandes */
 .header, .controles-card, .zona-editor { width: 100%; max-width: 1480px; margin-left: auto; margin-right: auto; }
 .zona-editor { grid-template-columns: minmax(0, 1fr) 320px; }
@@ -819,8 +826,11 @@ label {
     .controles-grid { grid-template-columns: 1fr !important; gap: 10px; }
     .zona-editor { display: flex; flex-direction: column; gap: 12px; }
     .cancha-wrapper { width: 100%; overflow: hidden; border-radius: 10px; }
+    .ayuda-tactil { display:flex; align-items:center; gap:8px; padding:10px 12px; background:#fff8df; color:#604b0c; border:1px solid #ead18a; border-radius:10px; margin-bottom:8px; font-size:12px; line-height:1.35; }
+    .ayuda-tactil span { flex:1; }
+    .ayuda-tactil button { border:0; border-radius:8px; padding:6px 8px; background:#6c757d; color:#fff; }
     .cancha { min-height: 520px; aspect-ratio: auto; border-radius: 10px; }
-    .slot { width: 48px; height: 48px; }
+    .slot { width: 48px; height: 48px; touch-action: manipulation; }
     .slot-label { font-size: 8px; }
     .jugador-token { width: 46px; height: 46px; }
     .jugador-foto { width: 40px; height: 40px; }
@@ -831,7 +841,7 @@ label {
     .token-posicion { top: -15px; font-size: 7px; padding: 1px 4px; }
     .banquillo { width: 100%; max-height: none; }
     .banquillo-lista { max-height: 340px; }
-    .banquillo-jugador { min-height: 58px; }
+    .banquillo-jugador { min-height:58px; cursor:pointer; touch-action:manipulation; }
     .cobertura-banca { grid-template-columns: repeat(2, 1fr); }
     .ali-card-top, .ali-card-footer { flex-wrap: wrap; gap: 8px; }
     .ali-card-footer .btn { flex: 1; min-width: 120px; }

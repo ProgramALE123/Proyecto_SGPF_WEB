@@ -29,9 +29,9 @@
         <label for="password" class="form-label">
           <i class="bi bi-lock-fill me-1"></i>Contraseña
         </label>
-        <div>
+        <div class="password-field">
           <input
-            type="password"
+            [type]="showPassword ? 'text' : 'password'"
             id="password"
             class="form-control bg-dark text-light border-custom"
             [(ngModel)]="password"
@@ -40,6 +40,11 @@
             autocomplete="current-password"
             required
           />
+          <button type="button" class="password-toggle" (click)="showPassword = !showPassword"
+            [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            [title]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+            <i class="bi" [class.bi-eye-fill]="!showPassword" [class.bi-eye-slash-fill]="showPassword"></i>
+          </button>
         </div>
       </div>
 

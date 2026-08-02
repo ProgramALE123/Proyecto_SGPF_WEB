@@ -14,7 +14,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
-        value: 8h
+        value: 30d
       - key: DB_HOST
         fromDatabase:
           name: sgpf-db

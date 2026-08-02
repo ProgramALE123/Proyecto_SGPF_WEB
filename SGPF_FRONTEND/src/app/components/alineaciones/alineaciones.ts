@@ -35,6 +35,8 @@ export class Alineaciones implements OnInit {
   // ─── Drag & drop ─────────────────────────────────────────
   draggingFromBanquillo: Jugador | null = null;
   draggingFromCancha: JugadorEnCancha | null = null;
+  jugadorTactilSeleccionado: Jugador | null = null;
+  jugadorCanchaTactilSeleccionado: JugadorEnCancha | null = null;
   isDraggingOver: boolean = false;
   mensajePosicion: string = '';
   guardando: boolean = false;
@@ -251,11 +253,13 @@ export class Alineaciones implements OnInit {
 
   // ─── Drag & drop ─────────────────────────────────────────
   onDragStartBanquillo(jugador: Jugador): void {
+    this.cancelarSeleccionTactil(false);
     this.draggingFromBanquillo = jugador;
     this.draggingFromCancha = null;
   }
 
   onDragStartCancha(jec: JugadorEnCancha): void {
+    this.cancelarSeleccionTactil(false);
     this.draggingFromCancha = jec;
     this.draggingFromBanquillo = null;
   }
@@ -272,6 +276,39 @@ export class Alineaciones implements OnInit {
   onDropEnSlot(event: DragEvent, slotIdx: number): void {
     event.preventDefault();
     this.isDraggingOver = false;
+    this.asignarJugadorEnSlot(slotIdx);
+  }
+
+  seleccionarJugadorBanquillo(jugador: Jugador): void {
+    this.jugadorTactilSeleccionado = jugador;
+    this.jugadorCanchaTactilSeleccionado = null;
+    this.draggingFromBanquillo = jugador;
+    this.draggingFromCancha = null;
+    this.mensajePosicion = `${jugador.nombres} ${jugador.apellidos} seleccionado. Ahora toca una posición compatible de la cancha.`;
+  }
+
+  seleccionarJugadorCancha(jec: JugadorEnCancha): void {
+    this.jugadorCanchaTactilSeleccionado = jec;
+    this.jugadorTactilSeleccionado = jec.jugador;
+    this.draggingFromCancha = jec;
+    this.draggingFromBanquillo = null;
+    this.mensajePosicion = `${jec.jugador.nombres} ${jec.jugador.apellidos} seleccionado. Toca otra posición para moverlo.`;
+  }
+
+  colocarSeleccionadoEnSlot(slotIdx: number): void {
+    if (!this.draggingFromBanquillo && !this.draggingFromCancha) return;
+    this.asignarJugadorEnSlot(slotIdx);
+  }
+
+  cancelarSeleccionTactil(limpiarMensaje: boolean = true): void {
+    this.jugadorTactilSeleccionado = null;
+    this.jugadorCanchaTactilSeleccionado = null;
+    this.draggingFromBanquillo = null;
+    this.draggingFromCancha = null;
+    if (limpiarMensaje) this.mensajePosicion = '';
+  }
+
+  private asignarJugadorEnSlot(slotIdx: number): void {
     const slot = this.posicionesPorFormacion[this.formacionSeleccionada][slotIdx];
     const yaOcupado = this.jugadorEnSlot(slotIdx);
     const jugadorMovido = this.draggingFromBanquillo ?? this.draggingFromCancha?.jugador ?? null;
@@ -280,6 +317,8 @@ export class Alineaciones implements OnInit {
       this.mensajePosicion = `${jugadorMovido.nombres} ${jugadorMovido.apellidos} es ${jugadorMovido.posicion} y no puede ocupar la posicion de ${slot.rol}.`;
       this.draggingFromBanquillo = null;
       this.draggingFromCancha = null;
+      this.jugadorTactilSeleccionado = null;
+      this.jugadorCanchaTactilSeleccionado = null;
       return;
     }
 
@@ -306,6 +345,8 @@ export class Alineaciones implements OnInit {
 
     this.draggingFromBanquillo = null;
     this.draggingFromCancha = null;
+    this.jugadorTactilSeleccionado = null;
+    this.jugadorCanchaTactilSeleccionado = null;
     this.mensajePosicion = jugadorMovido && jugadorMovido.posicion !== slot.rol
       ? `Advertencia: ${jugadorMovido.apellidos} juega normalmente como ${jugadorMovido.posicion}, no como ${slot.rol}.`
       : '';
@@ -322,6 +363,7 @@ export class Alineaciones implements OnInit {
 
   quitarDeCancha(jec: JugadorEnCancha): void {
     this.jugadoresEnCancha = this.jugadoresEnCancha.filter(j => j !== jec);
+    this.cancelarSeleccionTactil();
   }
 
   limpiarCancha(): void {

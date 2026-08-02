@@ -147,7 +147,7 @@
         <div class="header">
             <div>
                 <h1>{{ editandoId !== null ? 'Editar alineación' : 'Nueva alineación' }}</h1>
-                <p>Arrastra los jugadores desde el banquillo hasta los slots de la cancha.</p>
+                <p>En celular toca un jugador y después su posición. En computadora también puedes arrastrarlo.</p>
             </div>
             <div class="header-acciones">
                 <button class="btn btn-secondary" (click)="cancelarEditor()">Cancelar</button>
@@ -203,6 +203,12 @@
 
             <!-- ── CANCHA ─────────────────────────────── -->
             <div class="cancha-wrapper">
+                <div class="ayuda-tactil">
+                    <i class="bi bi-hand-index-thumb-fill"></i>
+                    <span *ngIf="!jugadorTactilSeleccionado">Toca un jugador del banquillo y luego una posición.</span>
+                    <span *ngIf="jugadorTactilSeleccionado"><strong>{{ jugadorTactilSeleccionado.apellidos }}</strong> seleccionado: toca una posición.</span>
+                    <button *ngIf="jugadorTactilSeleccionado" type="button" (click)="cancelarSeleccionTactil()">Cancelar</button>
+                </div>
                 <div class="cancha" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" [class.drag-over]="isDraggingOver">
 
                     <svg class="campo-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -233,7 +239,7 @@
 
                     <div class="formacion-overlay">{{ formacionSeleccionada }}</div>
 
-                    <div class="slot" *ngFor="let slot of posicionesPorFormacion[formacionSeleccionada]; let i = index" [style.left.%]="slot.x" [style.top.%]="slot.y" (dragover)="onDragOver($event)" (drop)="onDropEnSlot($event, i)">
+                    <div class="slot" *ngFor="let slot of posicionesPorFormacion[formacionSeleccionada]; let i = index" [class.slot-destino]="jugadorTactilSeleccionado" [style.left.%]="slot.x" [style.top.%]="slot.y" (click)="colocarSeleccionadoEnSlot(i)" (dragover)="onDragOver($event)" (drop)="onDropEnSlot($event, i)">
 
                         <ng-container *ngIf="!jugadorEnSlot(i)">
                             <div class="slot-vacio" [style.border-color]="colorRol(slot.rol)">
@@ -242,7 +248,7 @@
                         </ng-container>
 
                         <ng-container *ngIf="jugadorEnSlot(i) as jec">
-                            <div class="jugador-token" [class.fuera-posicion]="fueraDePosicion(jec)" [style.background]="colorRol(jec.rol)" draggable="true" (dragstart)="onDragStartCancha(jec)" (dblclick)="quitarDeCancha(jec)" title="{{ jec.jugador.nombres }} {{ jec.jugador.apellidos }} - Posicion natural: {{ jec.jugador.posicion }}">
+                            <div class="jugador-token" [class.fuera-posicion]="fueraDePosicion(jec)" [class.seleccionado]="jugadorCanchaTactilSeleccionado === jec" [style.background]="colorRol(jec.rol)" draggable="true" (click)="$event.stopPropagation(); seleccionarJugadorCancha(jec)" (dragstart)="onDragStartCancha(jec)" (dblclick)="quitarDeCancha(jec)" title="{{ jec.jugador.nombres }} {{ jec.jugador.apellidos }} - Posicion natural: {{ jec.jugador.posicion }}">
                                 <img *ngIf="jec.jugador.foto" [src]="jec.jugador.foto" (error)="$any($event.target).style.display='none'" class="token-foto">
                                 <span class="token-iniciales">{{ iniciales(jec.jugador) }}</span>
                                 <div class="token-info">
@@ -251,7 +257,7 @@
                                 </div>
                                 <span class="token-posicion" [class.posicion-alerta]="fueraDePosicion(jec)">{{ jec.jugador.posicion | slice:0:3 | uppercase }}</span>
                                 <i *ngIf="fueraDePosicion(jec)" class="bi bi-exclamation-triangle-fill token-advertencia" title="Fuera de su posicion natural"></i>
-                                <button class="token-quitar" (click)="quitarDeCancha(jec)" title="Quitar">×</button>
+                                <button class="token-quitar" (click)="$event.stopPropagation(); quitarDeCancha(jec)" title="Quitar">×</button>
                             </div>
                         </ng-container>
 
@@ -276,7 +282,7 @@
                 </div>
 
                 <div class="banquillo-hint">
-                    <i class="bi bi-arrow-left-right me-1"></i> Arrastra hacia la cancha · Suelta aquí para retirar
+                    <i class="bi bi-hand-index-thumb me-1"></i> Toca un jugador y luego una posición · También puedes arrastrar
                 </div>
                 <div class="cobertura-banca">
                   <span [class.sin-cobertura]="coberturaBanquillo('Portero')===0">POR {{ coberturaBanquillo('Portero') }}</span>
@@ -287,7 +293,7 @@
                 <div class="no-convocables" *ngIf="jugadoresNoConvocables.length"><i class="bi bi-shield-exclamation"></i> {{ jugadoresNoConvocables.length }} no convocables: <span *ngFor="let j of jugadoresNoConvocables">{{ j.apellidos }} ({{ j.estado }}) </span></div>
 
                 <div class="banquillo-lista">
-                    <div class="banquillo-jugador" *ngFor="let j of jugadoresDisponibles" draggable="true" (dragstart)="onDragStartBanquillo(j)" title="Arrastra a la cancha">
+                    <div class="banquillo-jugador" *ngFor="let j of jugadoresDisponibles" [class.seleccionado]="jugadorTactilSeleccionado === j" draggable="true" (click)="seleccionarJugadorBanquillo(j)" (dragstart)="onDragStartBanquillo(j)" title="Toca o arrastra a la cancha">
                         <img *ngIf="j.foto" [src]="j.foto" (error)="$any($event.target).style.display='none'" class="banquillo-foto">
                         <div class="banquillo-iniciales" *ngIf="!j.foto">{{ iniciales(j) }}</div>
                         <div class="banquillo-info">

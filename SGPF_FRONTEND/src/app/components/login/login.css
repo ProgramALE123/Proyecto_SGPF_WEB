@@ -64,6 +64,12 @@
   border-color: var(--primary-gold);
 }
 
+.password-field { position: relative; }
+.password-field .form-control { padding-right: 3.25rem; }
+.password-toggle { position:absolute; top:50%; right:.35rem; transform:translateY(-50%); width:42px; height:42px; display:grid; place-items:center; border:0; border-radius:9px; color:var(--primary-gold); background:transparent; font-size:1.15rem; cursor:pointer; }
+.password-toggle:hover, .password-toggle:focus-visible { background:rgba(212,168,67,.14); outline:2px solid rgba(212,168,67,.4); }
+.password-field input::-ms-reveal, .password-field input::-ms-clear { display:none; }
+
 .cred-list {
   display: flex;
   flex-wrap: wrap;
