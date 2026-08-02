@@ -1,0 +1,12 @@
+<ng-container *ngIf="isLoginRoute()">
+  <router-outlet />
+</ng-container>
+
+<ng-container *ngIf="!isLoginRoute()">
+  <div class="app-layout">
+    <app-nadvar />
+    <main class="main-content">
+      <router-outlet />
+    </main>
+  </div>
+</ng-container>

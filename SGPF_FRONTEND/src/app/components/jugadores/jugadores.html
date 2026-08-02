@@ -1,0 +1,159 @@
+<div class="jugadores-container">
+
+  <div class="header">
+    <div>
+      <h1>Gestión de jugadores</h1>
+      <p>Registro y administración de jugadores de la plantilla principal.</p>
+    </div>
+
+    <button class="btn btn-success" (click)="abrirFormulario()">
+      Nuevo jugador
+    </button>
+  </div>
+
+  <div class="resumen-plantilla">
+    <div><strong>{{ jugadores.length }}</strong><span>Plantilla</span></div>
+    <div><strong>{{ disponibles }}</strong><span>Disponibles</span></div>
+    <label>Filtrar estado
+      <select class="form-select form-select-sm" [(ngModel)]="filtroEstado"><option>Todos</option><option>Disponible</option><option>Lesionado</option><option>Suspendido</option><option>Recuperacion</option></select>
+    </label>
+  </div>
+
+  <div class="formulario-card" *ngIf="mostrarFormulario">
+    <h3>{{ editando ? 'Editar jugador' : 'Registrar jugador' }}</h3>
+
+    <form>
+      <div class="row g-3">
+
+        <div class="col-md-6">
+          <label>Nombres</label>
+          <input type="text" class="form-control" [(ngModel)]="jugador.nombres" name="nombres">
+        </div>
+
+        <div class="col-md-6">
+          <label>Apellidos</label>
+          <input type="text" class="form-control" [(ngModel)]="jugador.apellidos" name="apellidos">
+        </div>
+
+        <div class="col-md-4">
+          <label>Edad</label>
+          <input type="number" class="form-control" [(ngModel)]="jugador.edad" name="edad">
+        </div>
+
+        <div class="col-md-4">
+          <label>Posición</label>
+          <input type="text" class="form-control" [(ngModel)]="jugador.posicion" name="posicion">
+        </div>
+
+        <div class="col-md-4">
+          <label>Número de camiseta</label>
+          <input type="number" class="form-control" [(ngModel)]="jugador.camiseta" name="camiseta">
+        </div>
+
+        <div class="col-md-4">
+          <label>Estatura</label>
+          <input type="number" class="form-control" [(ngModel)]="jugador.estatura" name="estatura">
+        </div>
+
+        <div class="col-md-4">
+          <label>Peso</label>
+          <input type="number" class="form-control" [(ngModel)]="jugador.peso" name="peso">
+        </div>
+
+        <div class="col-md-4">
+          <label>URL de foto</label>
+          <input type="text" class="form-control" [(ngModel)]="jugador.foto" name="foto">
+        </div>
+        <div class="col-md-4"><label>Estado deportivo</label><select class="form-select" [(ngModel)]="jugador.estado" name="estado"><option>Disponible</option><option>Lesionado</option><option>Suspendido</option><option>Recuperacion</option></select></div>
+        <div class="col-md-4"><label>Condición física (0-100)</label><input type="number" min="0" max="100" class="form-control" [(ngModel)]="jugador.condicionFisica" name="condicionFisica"></div>
+        <div class="col-md-4"><label>Observaciones médicas</label><input type="text" class="form-control" [(ngModel)]="jugador.observacionesMedicas" name="observacionesMedicas"></div>
+
+      </div>
+
+      <div class="botones-formulario">
+        <button type="button" class="btn btn-success" (click)="guardarJugador()">
+          {{ editando ? 'Guardar cambios' : 'Guardar jugador' }}
+        </button>
+
+        <button type="button" class="btn btn-secondary" (click)="cerrarFormulario()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="jugadores-grid">
+    <div class="jugador-card" *ngFor="let jugador of jugadoresFiltrados; let i = index">
+      <span class="estado-badge" [ngClass]="claseEstado(jugador.estado)">{{ jugador.estado }}</span>
+
+      <div class="foto-container">
+        <img [src]="jugador.foto" alt="Foto del jugador">
+      </div>
+
+      <div class="jugador-info">
+        <h3>{{ jugador.nombres }} {{ jugador.apellidos }}</h3>
+        <p>{{ jugador.posicion }}</p>
+
+        <div class="datos-rapidos">
+          <span>#{{ jugador.camiseta }}</span>
+          <span>{{ jugador.edad }} años</span>
+        </div>
+        <div class="condicion"><span>Condición física</span><strong>{{ jugador.condicionFisica }}%</strong><div class="condicion-bar"><i [style.width.%]="jugador.condicionFisica"></i></div></div>
+      </div>
+
+      <div class="acciones">
+        <button class="btn btn-outline-success btn-sm" (click)="verMas(jugador)">
+          Ver más
+        </button>
+
+        <button class="btn btn-warning btn-sm" (click)="editarJugadorSeleccionado(jugador)">
+          Editar
+        </button>
+
+        <button class="btn btn-danger btn-sm" (click)="eliminarJugadorSeleccionado(jugador)">
+          Eliminar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="detalle-fondo" *ngIf="mostrarDetalle && jugadorSeleccionado">
+    <div class="detalle-card">
+
+      <button class="cerrar" (click)="cerrarDetalle()">×</button>
+
+      <img [src]="jugadorSeleccionado.foto" alt="Foto del jugador">
+
+      <h2>{{ jugadorSeleccionado.nombres }} {{ jugadorSeleccionado.apellidos }}</h2>
+      <p class="posicion">{{ jugadorSeleccionado.posicion }}</p>
+
+      <div class="detalle-grid">
+        <div>
+          <strong>Edad</strong>
+          <span>{{ jugadorSeleccionado.edad }} años</span>
+        </div>
+
+        <div>
+          <strong>Camiseta</strong>
+          <span>#{{ jugadorSeleccionado.camiseta }}</span>
+        </div>
+
+        <div>
+          <strong>Estatura</strong>
+          <span>{{ jugadorSeleccionado.estatura }} cm</span>
+        </div>
+
+        <div>
+          <strong>Peso</strong>
+          <span>{{ jugadorSeleccionado.peso }} kg</span>
+        </div>
+        <div><strong>Estado</strong><span>{{ jugadorSeleccionado.estado }}</span></div>
+        <div><strong>Condición</strong><span>{{ jugadorSeleccionado.condicionFisica }}%</span></div>
+      </div>
+      <p class="nota-medica" *ngIf="jugadorSeleccionado.observacionesMedicas"><i class="bi bi-activity me-1"></i>{{ jugadorSeleccionado.observacionesMedicas }}</p>
+
+    </div>
+  </div>
+
+</div>

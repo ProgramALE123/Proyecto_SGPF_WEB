@@ -1,0 +1,315 @@
+<div class="alineaciones-container">
+
+    <!-- ══════════════════════════════════════════
+       VISTA: LISTA DE ALINEACIONES GUARDADAS
+  ══════════════════════════════════════════ -->
+    <ng-container *ngIf="vista === 'lista'">
+
+        <div class="header">
+            <div>
+                <h1>Gestión de Alineaciones</h1>
+                <p>Visualiza las alineaciones guardadas y crea nuevas para partidos programados.</p>
+            </div>
+            <button class="btn btn-success" (click)="nuevaAlineacion()">
+        <i class="bi bi-plus-lg me-1"></i> Nueva alineación
+      </button>
+        </div>
+
+        <!-- Lista guardada -->
+        <div class="alineaciones-guardadas" *ngIf="alineaciones.length > 0">
+            <div class="ali-card" *ngFor="let ali of alineaciones" [class.expandida]="estaExpandida(ali.id)">
+
+                <div class="ali-card-top">
+                    <div class="formacion-badge">{{ ali.formacion }}</div>
+                    <span class="ali-fecha">{{ ali.fechaCreacion }}</span>
+                </div>
+
+                <div class="ali-card-body">
+                    <div class="ali-vs" *ngIf="ali.partido">
+                        <i class="bi bi-shield-fill me-1"></i>
+                        <strong>Orense SC</strong> vs <strong>{{ ali.partido.rival }}</strong>
+                        <span class="ali-torneo">— {{ ali.partido.torneo }}</span>
+                    </div>
+                    <div class="ali-vs ali-resultado" *ngIf="ali.partido && ali.partido.resultado">
+                        <i class="bi bi-trophy me-1"></i> Resultado: <strong>{{ ali.partido.resultado }}</strong>
+                        <span class="ali-condicion ms-2">{{ ali.partido.condicion }}</span>
+                    </div>
+                    <div class="ali-vs sin-partido" *ngIf="!ali.partido">
+                        <i class="bi bi-clipboard me-1"></i> Sin partido asignado
+                    </div>
+
+                    <div class="ali-jugadores-preview">
+                        <div class="jugador-chip" *ngFor="let jec of ali.jugadoresEnCancha.slice(0,5)" [style.border-color]="colorRol(jec.rol)">
+                            <span class="chip-num">#{{ jec.jugador.camiseta }}</span> {{ jec.jugador.nombres }} {{ jec.jugador.apellidos }}
+                        </div>
+                        <div class="jugador-chip mas" *ngIf="ali.jugadoresEnCancha.length > 5">
+                            +{{ ali.jugadoresEnCancha.length - 5 }} más
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini cancha expandible -->
+                <div class="mini-cancha-wrapper" *ngIf="estaExpandida(ali.id)">
+                    <div class="mini-cancha-titulo">
+                        <i class="bi bi-grid-3x3-gap me-1"></i> Formación <strong>{{ ali.formacion }}</strong> — {{ ali.jugadoresEnCancha.length }} jugadores
+                    </div>
+                    <div class="mini-cancha">
+                        <!-- SVG campo -->
+                        <svg class="mini-campo-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <defs>
+                <pattern id="cesped-mini" x="0" y="0" width="100" height="14.28" patternUnits="userSpaceOnUse">
+                  <rect width="100" height="7.14" fill="rgba(0,0,0,0.06)"/>
+                </pattern>
+              </defs>
+              <rect width="100" height="100" fill="url(#cesped-mini)"/>
+              <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(255,255,255,0.5)" stroke-width="0.6"/>
+              <circle cx="50" cy="50" r="13" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.6"/>
+              <circle cx="50" cy="50" r="0.9" fill="rgba(255,255,255,0.7)"/>
+              <rect x="20" y="76" width="60" height="24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.6"/>
+              <rect x="35" y="88" width="30" height="12" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.6"/>
+              <rect x="43" y="98.5" width="14" height="1.5" fill="rgba(255,255,255,0.7)"/>
+              <circle cx="50" cy="82" r="0.9" fill="rgba(255,255,255,0.7)"/>
+              <path d="M 32 76 A 18 18 0 0 1 68 76" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.6"/>
+              <rect x="20" y="0" width="60" height="24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.6"/>
+              <rect x="35" y="0" width="30" height="12" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.6"/>
+              <rect x="43" y="0" width="14" height="1.5" fill="rgba(255,255,255,0.7)"/>
+              <circle cx="50" cy="18" r="0.9" fill="rgba(255,255,255,0.7)"/>
+              <path d="M 32 24 A 18 18 0 0 0 68 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.6"/>
+            </svg>
+
+                        <!-- Badge formación -->
+                        <div class="mini-formacion-badge">{{ ali.formacion }}</div>
+
+                        <!-- Slots / tokens -->
+                        <div class="mini-slot" *ngFor="let slot of slotsDeFormacion(ali.formacion); let i = index" [style.left.%]="slot.x" [style.top.%]="slot.y">
+
+                            <!-- Slot vacío -->
+                            <ng-container *ngIf="!jugadorEnSlotDeAlineacion(ali, i)">
+                                <div class="mini-slot-vacio" [style.border-color]="colorRol(slot.rol)">
+                                    <span class="mini-slot-label">{{ slot.label }}</span>
+                                </div>
+                            </ng-container>
+
+                            <!-- Slot ocupado -->
+                            <ng-container *ngIf="jugadorEnSlotDeAlineacion(ali, i) as jec">
+                                <div class="mini-token" [style.background]="colorRol(jec.rol)" [title]="jec.jugador.nombres + ' ' + jec.jugador.apellidos + ' — #' + jec.jugador.camiseta">
+                                    <span class="mini-token-iniciales">{{ iniciales(jec.jugador) }}</span>
+                                    <div class="mini-token-info">
+                                        <span class="mini-token-num">#{{ jec.jugador.camiseta }}</span>
+                                        <span class="mini-token-nombre">{{ jec.jugador.apellidos }}</span>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                        </div>
+                    </div>
+
+                    <!-- Leyenda mini -->
+                    <div class="mini-leyenda">
+                        <div class="mini-leyenda-item"><span class="leyenda-dot" style="background:#f4a900"></span> POR</div>
+                        <div class="mini-leyenda-item"><span class="leyenda-dot" style="background:#1a6b3c"></span> DEF</div>
+                        <div class="mini-leyenda-item"><span class="leyenda-dot" style="background:#2e86de"></span> MED</div>
+                        <div class="mini-leyenda-item"><span class="leyenda-dot" style="background:#c0392b"></span> DEL</div>
+                    </div>
+                </div>
+
+                <div class="ali-card-acciones">
+                    <button class="btn btn-outline-primary btn-sm" (click)="toggleExpandir(ali.id)">
+            <i class="bi" [class.bi-eye]="!estaExpandida(ali.id)" [class.bi-eye-slash]="estaExpandida(ali.id)"></i>
+            {{ estaExpandida(ali.id) ? 'Ocultar cancha' : 'Ver cancha' }}
+          </button>
+                    <button class="btn btn-outline-success btn-sm" (click)="editarAlineacion(ali)">
+            <i class="bi bi-pencil me-1"></i> Editar
+          </button>
+                    <button class="btn btn-danger btn-sm" (click)="eliminarAlineacion(ali.id)">
+            <i class="bi bi-trash me-1"></i> Eliminar
+          </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Sin alineaciones -->
+        <div class="sin-alineaciones" *ngIf="alineaciones.length === 0">
+            <i class="bi bi-diagram-3"></i>
+            <p>No hay alineaciones guardadas. Haz clic en "Nueva alineación" para comenzar.</p>
+        </div>
+
+    </ng-container>
+
+
+    <!-- ══════════════════════════════════════════
+       VISTA: EDITOR TÁCTICO
+  ══════════════════════════════════════════ -->
+    <ng-container *ngIf="vista === 'editor'">
+
+        <!-- Header editor -->
+        <div class="header">
+            <div>
+                <h1>{{ editandoId !== null ? 'Editar alineación' : 'Nueva alineación' }}</h1>
+                <p>Arrastra los jugadores desde el banquillo hasta los slots de la cancha.</p>
+            </div>
+            <div class="header-acciones">
+                <button class="btn btn-secondary" (click)="cancelarEditor()">Cancelar</button>
+                <button class="btn btn-success" (click)="guardarAlineacion()" [disabled]="slotsOcupados === 0 || guardando">
+          <span *ngIf="guardando" class="spinner-border spinner-border-sm me-1"></span><i *ngIf="!guardando" class="bi bi-check-lg me-1"></i> {{ guardando ? 'Guardando...' : 'Guardar alineación' }}
+        </button>
+            </div>
+        </div>
+
+        <!-- Controles superiores -->
+        <div class="controles-card">
+            <div class="row g-3 align-items-end">
+
+                <div class="col-md-4">
+                    <label>Formación táctica</label>
+                    <select class="form-select" [(ngModel)]="formacionSeleccionada" (ngModelChange)="cambiarFormacion()">
+            <option *ngFor="let f of formaciones" [value]="f">{{ f }}</option>
+          </select>
+                </div>
+
+                <div class="col-md-5">
+                    <label>Partido programado</label>
+                    <select class="form-select" [(ngModel)]="partidoSeleccionadoIdx">
+            <option [value]="-1">— Sin partido —</option>
+            <option *ngFor="let p of partidosProgramados; let i = index" [value]="i">
+              {{ p.fecha | date:'dd/MM/yyyy' }} — vs {{ p.rival }} ({{ p.torneo }})
+            </option>
+          </select>
+                    <small class="text-muted" *ngIf="partidosProgramados.length === 0">
+            <i class="bi bi-info-circle me-1"></i>No hay partidos programados pendientes.
+          </small>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="contador-slots">
+                        <span class="slots-num" [class.completo]="slotsOcupados === slotsTotales">
+              {{ slotsOcupados }}/{{ slotsTotales }}
+            </span>
+                        <span class="slots-label">jugadores en cancha</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ZONA PRINCIPAL: cancha + banquillo -->
+        <div *ngIf="mensajePosicion" class="alert alerta-posicion" [class.alert-danger]="mensajePosicion.startsWith('No') || mensajePosicion.includes('no puede')" [class.alert-warning]="mensajePosicion.startsWith('Advertencia')">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ mensajePosicion }}
+            <button type="button" class="btn-close float-end" aria-label="Cerrar" (click)="mensajePosicion = ''"></button>
+        </div>
+
+        <div class="zona-editor">
+
+            <!-- ── CANCHA ─────────────────────────────── -->
+            <div class="cancha-wrapper">
+                <div class="cancha" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" [class.drag-over]="isDraggingOver">
+
+                    <svg class="campo-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              <pattern id="cesped" x="0" y="0" width="100" height="14.28" patternUnits="userSpaceOnUse">
+                <rect width="100" height="7.14" fill="rgba(0,0,0,0.06)"/>
+              </pattern>
+            </defs>
+            <rect width="100" height="100" fill="url(#cesped)"/>
+            <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <circle cx="50" cy="50" r="13" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <circle cx="50" cy="50" r="0.8" fill="rgba(255,255,255,0.7)"/>
+            <rect x="20" y="76" width="60" height="24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <rect x="35" y="88" width="30" height="12" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <rect x="43" y="98.5" width="14" height="1.5" fill="rgba(255,255,255,0.7)"/>
+            <circle cx="50" cy="82" r="0.8" fill="rgba(255,255,255,0.7)"/>
+            <path d="M 32 76 A 18 18 0 0 1 68 76" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <rect x="20" y="0" width="60" height="24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <rect x="35" y="0" width="30" height="12" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <rect x="43" y="0" width="14" height="1.5" fill="rgba(255,255,255,0.7)"/>
+            <circle cx="50" cy="18" r="0.8" fill="rgba(255,255,255,0.7)"/>
+            <path d="M 32 24 A 18 18 0 0 0 68 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <path d="M 0 0 A 3 3 0 0 1 3 3" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <path d="M 100 0 A 3 3 0 0 0 97 3" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <path d="M 0 100 A 3 3 0 0 0 3 97" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+            <path d="M 100 100 A 3 3 0 0 1 97 97" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+          </svg>
+
+                    <div class="formacion-overlay">{{ formacionSeleccionada }}</div>
+
+                    <div class="slot" *ngFor="let slot of posicionesPorFormacion[formacionSeleccionada]; let i = index" [style.left.%]="slot.x" [style.top.%]="slot.y" (dragover)="onDragOver($event)" (drop)="onDropEnSlot($event, i)">
+
+                        <ng-container *ngIf="!jugadorEnSlot(i)">
+                            <div class="slot-vacio" [style.border-color]="colorRol(slot.rol)">
+                                <span class="slot-label">{{ slot.label }}</span>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="jugadorEnSlot(i) as jec">
+                            <div class="jugador-token" [class.fuera-posicion]="fueraDePosicion(jec)" [style.background]="colorRol(jec.rol)" draggable="true" (dragstart)="onDragStartCancha(jec)" (dblclick)="quitarDeCancha(jec)" title="{{ jec.jugador.nombres }} {{ jec.jugador.apellidos }} - Posicion natural: {{ jec.jugador.posicion }}">
+                                <img *ngIf="jec.jugador.foto" [src]="jec.jugador.foto" (error)="$any($event.target).style.display='none'" class="token-foto">
+                                <span class="token-iniciales">{{ iniciales(jec.jugador) }}</span>
+                                <div class="token-info">
+                                    <span class="token-num">#{{ jec.jugador.camiseta }}</span>
+                                    <span class="token-nombre">{{ jec.jugador.apellidos }}</span>
+                                </div>
+                                <span class="token-posicion" [class.posicion-alerta]="fueraDePosicion(jec)">{{ jec.jugador.posicion | slice:0:3 | uppercase }}</span>
+                                <i *ngIf="fueraDePosicion(jec)" class="bi bi-exclamation-triangle-fill token-advertencia" title="Fuera de su posicion natural"></i>
+                                <button class="token-quitar" (click)="quitarDeCancha(jec)" title="Quitar">×</button>
+                            </div>
+                        </ng-container>
+
+                    </div>
+
+                </div>
+
+                <div class="leyenda">
+                    <div class="leyenda-item"><span class="leyenda-dot" style="background:#f4a900"></span> Portero</div>
+                    <div class="leyenda-item"><span class="leyenda-dot" style="background:#1a6b3c"></span> Defensa</div>
+                    <div class="leyenda-item"><span class="leyenda-dot" style="background:#2e86de"></span> Mediocampista</div>
+                    <div class="leyenda-item"><span class="leyenda-dot" style="background:#c0392b"></span> Delantero</div>
+                </div>
+            </div>
+
+            <!-- ── BANQUILLO ──────────────────────────── -->
+            <div class="banquillo" (dragover)="$event.preventDefault()" (drop)="onDropEnBanquillo($event)">
+
+                <div class="banquillo-header">
+                    <h6><i class="bi bi-people-fill me-2"></i>Banquillo</h6>
+                    <span class="banquillo-count">{{ jugadoresDisponibles.length }} disponibles</span>
+                </div>
+
+                <div class="banquillo-hint">
+                    <i class="bi bi-arrow-left-right me-1"></i> Arrastra hacia la cancha · Suelta aquí para retirar
+                </div>
+                <div class="cobertura-banca">
+                  <span [class.sin-cobertura]="coberturaBanquillo('Portero')===0">POR {{ coberturaBanquillo('Portero') }}</span>
+                  <span [class.sin-cobertura]="coberturaBanquillo('Defensa')===0">DEF {{ coberturaBanquillo('Defensa') }}</span>
+                  <span [class.sin-cobertura]="coberturaBanquillo('Mediocampista')===0">MED {{ coberturaBanquillo('Mediocampista') }}</span>
+                  <span [class.sin-cobertura]="coberturaBanquillo('Delantero')===0">DEL {{ coberturaBanquillo('Delantero') }}</span>
+                </div>
+                <div class="no-convocables" *ngIf="jugadoresNoConvocables.length"><i class="bi bi-shield-exclamation"></i> {{ jugadoresNoConvocables.length }} no convocables: <span *ngFor="let j of jugadoresNoConvocables">{{ j.apellidos }} ({{ j.estado }}) </span></div>
+
+                <div class="banquillo-lista">
+                    <div class="banquillo-jugador" *ngFor="let j of jugadoresDisponibles" draggable="true" (dragstart)="onDragStartBanquillo(j)" title="Arrastra a la cancha">
+                        <img *ngIf="j.foto" [src]="j.foto" (error)="$any($event.target).style.display='none'" class="banquillo-foto">
+                        <div class="banquillo-iniciales" *ngIf="!j.foto">{{ iniciales(j) }}</div>
+                        <div class="banquillo-info">
+                            <span class="banquillo-nombre">{{ j.nombres }} {{ j.apellidos }}</span>
+                            <span class="banquillo-pos">{{ j.posicion }}</span>
+                        </div>
+                        <span class="banquillo-num">#{{ j.camiseta }}</span>
+                    </div>
+
+                    <div class="banquillo-vacio" *ngIf="jugadoresDisponibles.length === 0">
+                        <i class="bi bi-check-circle-fill text-success"></i> Todos los jugadores están en cancha
+                    </div>
+                </div>
+
+                <button class="btn-limpiar" (click)="limpiarCancha()" *ngIf="slotsOcupados > 0">
+          <i class="bi bi-arrow-counterclockwise me-1"></i> Limpiar cancha
+        </button>
+
+            </div>
+
+        </div>
+
+    </ng-container>
+
+</div>

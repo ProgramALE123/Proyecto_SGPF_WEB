@@ -1,0 +1,210 @@
+.jugadores-container {
+  min-height: 100vh;
+  padding: 30px;
+  background-color: #edf2ee;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.header {
+  background-color: #ffffff;
+  padding: 22px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  color: #123d25;
+  font-size: 28px;
+  text-transform: uppercase;
+}
+
+.header p {
+  margin: 6px 0 0;
+  color: #6b6b6b;
+  font-size: 14px;
+}
+
+.formulario-card {
+  background-color: #ffffff;
+  padding: 22px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.formulario-card h3 {
+  margin-bottom: 20px;
+  color: #123d25;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+label {
+  color: #333333;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.botones-formulario {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.jugadores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+.jugador-card {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  border-top: 6px solid #123d25;
+}
+
+.foto-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.foto-container img {
+  width: 115px;
+  height: 115px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #b59a52;
+}
+
+.jugador-info {
+  text-align: center;
+}
+
+.jugador-info h3 {
+  color: #123d25;
+  font-size: 21px;
+  margin-bottom: 5px;
+}
+
+.jugador-info p {
+  color: #666666;
+  margin-bottom: 15px;
+}
+
+.datos-rapidos {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.datos-rapidos span {
+  background-color: #edf2ee;
+  color: #123d25;
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.acciones {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.detalle-fondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(18, 61, 37, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.detalle-card {
+  background-color: #ffffff;
+  width: 420px;
+  max-width: 90%;
+  border-radius: 16px;
+  padding: 30px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+}
+
+.detalle-card img {
+  width: 135px;
+  height: 135px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid #b59a52;
+  margin-bottom: 15px;
+}
+
+.detalle-card h2 {
+  color: #123d25;
+  margin-bottom: 5px;
+}
+
+.posicion {
+  color: #666666;
+  margin-bottom: 20px;
+}
+
+.detalle-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.detalle-grid div {
+  background-color: #edf2ee;
+  padding: 14px;
+  border-radius: 10px;
+}
+
+.detalle-grid strong {
+  display: block;
+  color: #123d25;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.detalle-grid span {
+  color: #333333;
+  font-size: 15px;
+}
+
+.cerrar {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: none;
+  background: none;
+  font-size: 30px;
+  color: #123d25;
+  cursor: pointer;
+}
+.jugador-card { animation: cardIn .35s ease both; transition: transform .2s ease, box-shadow .2s ease; }
+.jugador-card:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(18,61,37,.16); }
+.estado-badge { position:absolute; top:14px; right:14px; padding:5px 10px; border-radius:20px; font-size:11px; font-weight:800; }
+.estado-disponible { background:#dff5e8; color:#13753c; }.estado-lesionado { background:#fde2e2; color:#b42318; }.estado-suspendido { background:#eee; color:#555; }.estado-recuperacion { background:#fff0c2; color:#8a6300; }
+.resumen-plantilla { display:flex; align-items:center; gap:18px; background:#fff; padding:14px 20px; border-radius:12px; margin-bottom:22px; box-shadow:0 3px 12px rgba(0,0,0,.06); }
+.resumen-plantilla div { display:flex; flex-direction:column; min-width:95px; }.resumen-plantilla strong { color:#123d25; font-size:24px; }.resumen-plantilla span { color:#777; font-size:12px; }.resumen-plantilla label { margin-left:auto; min-width:190px; }
+.condicion { text-align:left; font-size:11px; color:#667; margin:0 0 16px; }.condicion strong { float:right; color:#123d25; }.condicion-bar { height:6px; background:#e7ece8; border-radius:10px; overflow:hidden; clear:both; }.condicion-bar i { display:block; height:100%; background:linear-gradient(90deg,#b59a52,#198754); border-radius:10px; transition:width .5s ease; }
+.nota-medica { margin-top:16px; padding:10px; background:#fff7dd; color:#6b5200; border-radius:8px; font-size:13px; }
+@keyframes cardIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+@media(max-width:650px){.resumen-plantilla{flex-wrap:wrap}.resumen-plantilla label{margin-left:0;width:100%}}

@@ -1,0 +1,54 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+.card-resumen {
+    border-left: 6px solid #198754 !important;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.btn-success {
+    font-weight: bold;
+}
+
+.table th {
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+
+/* Badge condición visitante */
+
+.condicion-visitante {
+    background-color: #b59a52 !important;
+    color: #fff !important;
+}
+
+
+/* Bloque de fecha en próximos partidos */
+
+.proximo-partido-item {
+    background-color: #edf2ee;
+    border-left: 4px solid #123d25;
+}
+
+.fecha-bloque {
+    min-width: 46px;
+    flex-shrink: 0;
+}
+
+.fecha-bloque .dia {
+    font-size: 22px;
+    color: #123d25;
+    line-height: 1;
+}
+
+.fecha-bloque .mes {
+    font-size: 12px;
+    color: #b59a52;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.resumen-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.resumen-grid>div{width:auto!important}.resumen-grid .card-body{padding:22px}.resumen-grid h1{font-size:38px}@media(max-width:850px){.resumen-grid{grid-template-columns:1fr}.alerta-partido{align-items:flex-start}.cuenta{margin-left:auto}}
+.card-resumen { transition:transform .2s, box-shadow .2s; animation:subir .4s ease both; }.card-resumen:hover{transform:translateY(-4px);box-shadow:0 12px 25px rgba(18,61,37,.14)!important}.disponibilidad h1{color:#123d25}.disponibilidad small{color:#8a6a13}
+.alerta-partido{display:flex;align-items:center;gap:16px;background:linear-gradient(120deg,#123d25,#1b6038);color:white;border-radius:14px;padding:16px 22px;margin-bottom:22px;box-shadow:0 8px 24px rgba(18,61,37,.25);animation:subir .35s ease}.alerta-partido div:nth-child(2){display:flex;flex-direction:column;flex:1}.alerta-partido small{color:#e4c86e;font-weight:800;letter-spacing:1px}.alerta-partido strong{font-size:19px}.alerta-partido span{opacity:.8;font-size:13px}.pulso{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#b59a52;animation:pulse 1.8s infinite}.cuenta{text-align:center}.cuenta strong{font-size:28px;display:block}.cuenta span{display:block}.proximo-partido-item{transition:transform .2s,background .2s;position:relative}.proximo-partido-item:hover{transform:translateX(5px)}.proximo-partido-item.urgente{background:#fff1f0;border-left-color:#c0392b}.proximo-partido-item.proximo{background:#fff8e6;border-left-color:#b59a52}.dias-chip{font-size:10px;font-weight:800;background:white;padding:3px 7px;border-radius:10px;color:#123d25}.avatar-dashboard{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #b59a52;margin-right:8px}@keyframes subir{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(181,154,82,.5)}50%{box-shadow:0 0 0 10px rgba(181,154,82,0)}}

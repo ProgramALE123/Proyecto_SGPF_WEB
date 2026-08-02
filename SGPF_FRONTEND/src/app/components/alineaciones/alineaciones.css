@@ -1,0 +1,820 @@
+/* =====================================================
+   ALINEACIONES — paleta: #123d25 verde / #b59a52 oro
+   ===================================================== */
+
+.alineaciones-container {
+    min-height: 100vh;
+    padding: 30px;
+    background-color: #edf2ee;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ── HEADER ─────────────────────────────────────── */
+
+.header {
+    background: #fff;
+    padding: 22px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+
+.header h1 {
+    margin: 0;
+    color: #123d25;
+    font-size: 26px;
+    text-transform: uppercase;
+}
+
+.header p {
+    margin: 5px 0 0;
+    color: #6b6b6b;
+    font-size: 13px;
+}
+
+.header-acciones {
+    display: flex;
+    gap: 10px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+
+/* ── CONTROLES ──────────────────────────────────── */
+
+.controles-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+
+.form-select:focus {
+    border-color: #123d25;
+    box-shadow: 0 0 0 .2rem rgba(18, 61, 37, .15);
+}
+
+.contador-slots {
+    background: #edf2ee;
+    border-radius: 10px;
+    padding: 12px 16px;
+    text-align: center;
+}
+
+.slots-num {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    color: #123d25;
+    line-height: 1;
+}
+
+.slots-num.completo {
+    color: #b59a52;
+}
+
+.slots-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+
+/* ── ZONA EDITOR ────────────────────────────────── */
+
+.zona-editor {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 22px;
+    align-items: start;
+}
+
+
+/* ── CANCHA ─────────────────────────────────────── */
+
+.cancha-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cancha {
+    position: relative;
+    width: 100%;
+    /* Relación 68m × 105m ≈ 64.76% */
+    padding-top: 64.76%;
+    background: linear-gradient(180deg, #2d7a3a 0%, #226630 50%, #2d7a3a 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+    border: 3px solid #1a5c28;
+    transition: box-shadow .2s;
+}
+
+.cancha.drag-over {
+    box-shadow: 0 0 0 3px #b59a52, 0 4px 20px rgba(0, 0, 0, .3);
+}
+
+.campo-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* Badge formación en campo */
+
+.formacion-overlay {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, .45);
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 12px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+
+/* ── SLOTS ──────────────────────────────────────── */
+
+.slot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot-vacio {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px dashed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, .1);
+    transition: background .15s, transform .15s;
+    cursor: pointer;
+}
+
+.slot-vacio:hover {
+    background: rgba(255, 255, 255, .2);
+    transform: scale(1.1);
+}
+
+.slot-label {
+    color: rgba(255, 255, 255, .85);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: .5px;
+}
+
+
+/* ── TOKEN JUGADOR ──────────────────────────────── */
+
+.jugador-token {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .45);
+    border: 2.5px solid rgba(255, 255, 255, .7);
+    overflow: visible;
+    transition: transform .15s, box-shadow .15s;
+    user-select: none;
+}
+
+.jugador-token:hover {
+    transform: scale(1.12);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+}
+
+.jugador-token:active {
+    cursor: grabbing;
+}
+
+.token-foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    opacity: .35;
+}
+
+.token-iniciales {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+    z-index: 1;
+    line-height: 1;
+}
+
+.token-info {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, .7);
+    border-radius: 8px;
+    padding: 2px 6px;
+    display: flex;
+    gap: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.token-num {
+    font-size: 10px;
+    color: #f4c430;
+    font-weight: bold;
+}
+
+.token-nombre {
+    font-size: 10px;
+    color: #fff;
+    max-width: 64px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.token-quitar {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #c0392b;
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 30;
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.jugador-token:hover .token-quitar {
+    opacity: 1;
+}
+
+
+/* ── LEYENDA ────────────────────────────────────── */
+
+.leyenda {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .06);
+}
+
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #333;
+}
+
+.leyenda-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+
+/* ── BANQUILLO ──────────────────────────────────── */
+
+.banquillo {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    border-top: 5px solid #123d25;
+    min-height: 300px;
+}
+
+.banquillo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.banquillo-header h6 {
+    margin: 0;
+    color: #123d25;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.banquillo-count {
+    font-size: 12px;
+    color: #888;
+    background: #edf2ee;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.banquillo-hint {
+    font-size: 11px;
+    color: #999;
+    text-align: center;
+    padding: 6px 12px;
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.banquillo-lista {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 520px;
+    padding: 8px 0;
+}
+
+.banquillo-jugador {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    cursor: grab;
+    transition: background .12s;
+    border-bottom: 1px solid #f7f7f7;
+}
+
+.banquillo-jugador:hover {
+    background: #edf2ee;
+}
+
+.banquillo-jugador:active {
+    cursor: grabbing;
+}
+
+.banquillo-foto {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #b59a52;
+    flex-shrink: 0;
+}
+
+.banquillo-iniciales {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #123d25;
+    color: #fff;
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid #b59a52;
+}
+
+.banquillo-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.banquillo-nombre {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    color: #123d25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.banquillo-pos {
+    font-size: 11px;
+    color: #888;
+}
+
+.banquillo-num {
+    font-size: 13px;
+    font-weight: bold;
+    color: #b59a52;
+    flex-shrink: 0;
+}
+
+.banquillo-vacio {
+    text-align: center;
+    padding: 30px 16px;
+    color: #888;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.banquillo-vacio i {
+    font-size: 28px;
+}
+
+.btn-limpiar {
+    margin: 0;
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    border-top: 1px solid #f0f0f0;
+    color: #c0392b;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background .15s;
+}
+
+.btn-limpiar:hover {
+    background: #fff0f0;
+}
+
+
+/* ── LISTA ALINEACIONES GUARDADAS ───────────────── */
+
+.alineaciones-guardadas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+}
+
+.ali-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+    border-top: 6px solid #123d25;
+    overflow: hidden;
+}
+
+.ali-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.formacion-badge {
+    font-size: 22px;
+    font-weight: bold;
+    color: #123d25;
+    letter-spacing: 1px;
+}
+
+.ali-fecha {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.ali-card-body {
+    padding: 14px 18px;
+}
+
+.ali-vs {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.ali-vs i {
+    color: #b59a52;
+}
+
+.ali-torneo {
+    font-size: 12px;
+    color: #999;
+}
+
+.sin-partido {
+    color: #aaa;
+    font-style: italic;
+}
+
+.ali-jugadores-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.jugador-chip {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1.5px solid #123d25;
+    color: #123d25;
+    background: #edf2ee;
+}
+
+.jugador-chip.mas {
+    border-color: #b59a52;
+    color: #b59a52;
+    background: #fff;
+}
+
+.chip-num {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.ali-card-acciones {
+    display: flex;
+    gap: 8px;
+    padding: 12px 18px;
+    border-top: 1px solid #f0f0f0;
+    justify-content: flex-end;
+}
+
+
+/* Sin alineaciones */
+
+.sin-alineaciones {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8a9a8d;
+}
+
+.sin-alineaciones i {
+    font-size: 52px;
+    display: block;
+    margin-bottom: 16px;
+    color: #b59a52;
+}
+
+.sin-alineaciones p {
+    font-size: 15px;
+}
+
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+
+@media (max-width: 900px) {
+    .zona-editor {
+        grid-template-columns: 1fr;
+    }
+    .banquillo {
+        max-height: 300px;
+    }
+    .banquillo-lista {
+        max-height: 220px;
+    }
+}
+
+
+/* ── MINI CANCHA (vista expandida en lista) ─────── */
+
+.ali-card.expandida {
+    box-shadow: 0 6px 20px rgba(18, 61, 37, .18);
+}
+
+.mini-cancha-wrapper {
+    border-top: 1px solid #e8f0e9;
+    padding: 16px 18px;
+    background: #f7faf8;
+    animation: fadeSlideDown .25s ease;
+}
+
+@keyframes fadeSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mini-cancha-titulo {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.mini-cancha {
+    position: relative;
+    width: 100%;
+    padding-top: 64.76%;
+    background: linear-gradient(180deg, #2d7a3a 0%, #226630 50%, #2d7a3a 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, .25);
+    border: 2px solid #1a5c28;
+}
+
+.mini-campo-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.mini-formacion-badge {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, .45);
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.mini-slot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mini-slot-vacio {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px dashed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, .1);
+}
+
+.mini-slot-label {
+    color: rgba(255, 255, 255, .75);
+    font-size: 7px;
+    font-weight: bold;
+}
+
+.mini-token {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, .4);
+    border: 1.5px solid rgba(255, 255, 255, .7);
+    overflow: visible;
+}
+
+.mini-token-iniciales {
+    font-size: 9px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
+    z-index: 1;
+    line-height: 1;
+}
+
+.mini-token-info {
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, .7);
+    border-radius: 6px;
+    padding: 1px 5px;
+    display: flex;
+    gap: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.mini-token-num {
+    font-size: 7px;
+    color: #f4c430;
+    font-weight: bold;
+}
+
+.mini-token-nombre {
+    font-size: 7px;
+    color: #fff;
+    max-width: 44px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mini-leyenda {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+.mini-leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #555;
+}
+
+
+/* ── RESULTADO / CONDICION en lista ─────────────── */
+
+.ali-resultado {
+    font-size: 13px;
+    color: #b59a52;
+    margin-top: -6px;
+    margin-bottom: 10px;
+}
+
+.ali-condicion {
+    font-size: 11px;
+    color: #999;
+    background: #f5f5f5;
+    padding: 1px 7px;
+    border-radius: 10px;
+}
+.no-convocables { padding:9px 12px; background:#fff4dc; color:#775a00; font-size:10px; line-height:1.5; border-bottom:1px solid #f0dfb2; }.no-convocables i{color:#c0392b;margin-right:4px}.no-convocables span{display:inline-block;margin-right:4px}
+.cobertura-banca{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:#f7faf8;border-bottom:1px solid #e7ece8}.cobertura-banca span{text-align:center;background:#dff5e8;color:#126337;border-radius:10px;padding:3px;font-size:9px;font-weight:800}.cobertura-banca span.sin-cobertura{background:#fde2e2;color:#a52218}
+
+/* Vista de trabajo compacta y legible en monitores grandes */
+.header, .controles-card, .zona-editor { width: 100%; max-width: 1480px; margin-left: auto; margin-right: auto; }
+.zona-editor { grid-template-columns: minmax(0, 1fr) 320px; }
+.cancha { padding-top: 0; aspect-ratio: 16 / 9; min-height: 520px; max-height: 720px; }
+.slot { width: 76px; height: 76px; }
+.jugador-token { width: 70px; height: 70px; }
+.token-foto { opacity: 1; }
+.token-iniciales { color: transparent; }
+.token-info { bottom: -25px; background: rgba(7, 25, 14, .92); padding: 4px 8px; }
+.token-nombre { font-size: 11px; max-width: 90px; }
+.banquillo { position: sticky; top: 18px; }
+.banquillo-lista { max-height: 590px; }
+.banquillo-foto { width: 46px; height: 46px; }
+
+@media (max-width: 900px) {
+    .zona-editor { grid-template-columns: 1fr; }
+    .cancha { min-height: 440px; aspect-ratio: 4 / 3; }
+    .banquillo { position: static; }
+}
+
+.alerta-posicion { max-width: 1480px; margin: 0 auto 16px; font-weight: 600; }
+.jugador-token.fuera-posicion { border-color: #ffc107; box-shadow: 0 0 0 4px rgba(255,193,7,.35), 0 3px 10px rgba(0,0,0,.45); }
+.token-posicion { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); color: #fff; background: #123d25; border: 1px solid rgba(255,255,255,.65); border-radius: 10px; padding: 1px 6px; font-size: 9px; font-weight: 800; z-index: 22; }
+.token-posicion.posicion-alerta { color: #2b2100; background: #ffc107; }
+.token-advertencia { position: absolute; top: -8px; right: -10px; color: #ffc107; background: #152719; border-radius: 50%; padding: 2px; z-index: 25; }

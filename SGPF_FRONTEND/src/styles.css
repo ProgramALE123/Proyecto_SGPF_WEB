@@ -1,0 +1,71 @@
+@import 'bootstrap-icons/font/bootstrap-icons.min.css';
+
+:root {
+  --bg-dark: #0a1a10;
+  --bg-sidebar: #0d2618;
+  --bg-card: #11321e;
+  --primary-gold: #d4a843;
+  --primary-gold-hover: #c0962e;
+  --text-primary: #e8e8e8;
+  --text-muted: #a0b5a8;
+  --danger: #c0392b;
+  --success: #27ae60;
+  --info: #2980b9;
+  --border-color: #1a4028;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+button, .btn, a, input, select { transition: all .18s ease; }
+button:active, .btn:active { transform: scale(.97); }
+@media (prefers-reduced-motion: no-preference) {
+  main { animation: pageEnter .28s ease; }
+  @keyframes pageEnter { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
+}
+
+.btn-gold {
+  background-color: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: #000;
+  font-weight: 600;
+}
+.btn-gold:hover {
+  background-color: var(--primary-gold-hover);
+  border-color: var(--primary-gold-hover);
+  color: #000;
+}
+
+.btn-outline-gold {
+  border-color: var(--primary-gold);
+  color: var(--primary-gold);
+}
+.btn-outline-gold:hover {
+  background-color: var(--primary-gold);
+  color: #000;
+}
+
+.text-gold { color: var(--primary-gold); }
+.text-muted-custom { color: var(--text-muted); }
+.bg-card { background-color: var(--bg-card); }
+.bg-sidebar { background-color: var(--bg-sidebar); }
+.border-custom { border-color: var(--border-color) !important; }
+
+.page-header {
+  background: linear-gradient(135deg, var(--bg-card), var(--bg-sidebar));
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0 0 8px 8px;
+}
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-gold);
+  margin: 0;
+}

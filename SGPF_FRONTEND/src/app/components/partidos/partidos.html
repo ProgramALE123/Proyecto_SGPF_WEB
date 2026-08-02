@@ -1,0 +1,196 @@
+<div class="partidos-container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <h1>Gestión de Partidos</h1>
+            <p>Registro y administración de partidos programados y disputados.</p>
+        </div>
+        <button class="btn btn-success" (click)="abrirFormulario()">
+      <i class="bi bi-plus-lg me-1"></i> Nuevo partido
+    </button>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="formulario-card" *ngIf="mostrarFormulario">
+        <h3>{{ editando ? 'Editar partido' : 'Registrar partido' }}</h3>
+
+        <form>
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label>Equipo rival</label>
+                    <input type="text" class="form-control" [(ngModel)]="partido.rival" name="rival" placeholder="Ej: Barcelona SC">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Torneo</label>
+                    <input type="text" class="form-control" [(ngModel)]="partido.torneo" name="torneo" placeholder="Ej: Liga Pro Serie A">
+                </div>
+
+                <div class="col-md-4">
+                    <label>Fecha</label>
+                    <input type="date" class="form-control" [(ngModel)]="partido.fecha" name="fecha">
+                </div>
+
+                <div class="col-md-4">
+                    <label>Condición</label>
+                    <select class="form-select" [(ngModel)]="partido.condicion" name="condicion">
+            <option value="Local">Local</option>
+            <option value="Visitante">Visitante</option>
+          </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Resultado</label>
+                    <input type="text" class="form-control" [(ngModel)]="partido.resultado" name="resultado" placeholder="Ej: 2-1 (dejar vacío si no jugado)">
+                </div>
+
+                <div class="col-md-12">
+                    <label>Lugar</label>
+                    <input type="text" class="form-control" [(ngModel)]="partido.lugar" name="lugar" placeholder="Ej: Estadio 9 de Mayo, Machala">
+                </div>
+
+            </div>
+
+            <div class="botones-formulario">
+                <button type="button" class="btn btn-success" (click)="guardarPartido()">
+          {{ editando ? 'Guardar cambios' : 'Guardar partido' }}
+        </button>
+                <button type="button" class="btn btn-secondary" (click)="cerrarFormulario()">
+          Cancelar
+        </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- LISTA DE PARTIDOS -->
+    <div class="partidos-grid">
+        <div class="partido-card" *ngFor="let p of partidos; let i = index">
+
+            <div class="partido-header">
+                <div class="condicion-badge" [class.local]="p.condicion === 'Local'" [class.visitante]="p.condicion === 'Visitante'">
+                    {{ p.condicion }}
+                </div>
+                <span class="estado-badge" [ngClass]="obtenerClaseEstado(p.resultado)">
+          {{ obtenerEstado(p.resultado) }}
+        </span>
+            </div>
+
+            <div class="partido-vs">
+                <div class="equipo">
+                    <div class="escudo local-escudo">
+                        <i class="bi bi-shield-fill-check"></i>
+                    </div>
+                    <span class="equipo-nombre">Orense SC</span>
+                </div>
+
+                <div class="marcador" *ngIf="p.resultado; else sinResultado">
+                    <span class="resultado-texto">{{ p.resultado }}</span>
+                </div>
+                <ng-template #sinResultado>
+                    <div class="marcador">
+                        <span class="vs-texto">VS</span>
+                    </div>
+                </ng-template>
+
+                <div class="equipo">
+                    <div class="escudo rival-escudo">
+                        <img *ngIf="p.rivalFoto; else escudoGenerico" [src]="p.rivalFoto" [alt]="p.rival" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />
+                        <ng-template #escudoGenerico><i class="bi bi-shield-fill"></i></ng-template>
+                    </div>
+                    <span class="equipo-nombre">{{ p.rival }}</span>
+                </div>
+            </div>
+
+            <div class="partido-info">
+                <div class="info-item">
+                    <i class="bi bi-calendar3"></i>
+                    <span>{{ p.fecha | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>{{ p.lugar }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="bi bi-trophy"></i>
+                    <span>{{ p.torneo }}</span>
+                </div>
+            </div>
+
+            <div class="acciones">
+                <button class="btn btn-outline-success btn-sm" (click)="verDetalle(p)">
+          <i class="bi bi-eye me-1"></i> Ver más
+        </button>
+                <button class="btn btn-warning btn-sm" (click)="editarPartido(i)">
+          <i class="bi bi-pencil me-1"></i> Editar
+        </button>
+                <button class="btn btn-danger btn-sm" (click)="confirmarEliminar(i)">
+          <i class="bi bi-trash me-1"></i> Eliminar
+        </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MENSAJE SIN PARTIDOS -->
+    <div class="sin-partidos" *ngIf="partidos.length === 0">
+        <i class="bi bi-calendar-x"></i>
+        <p>No hay partidos registrados. Haz clic en "Nuevo partido" para comenzar.</p>
+    </div>
+
+    <!-- MODAL DETALLE -->
+    <div class="detalle-fondo" *ngIf="mostrarDetalle && partidoSeleccionado">
+        <div class="detalle-card">
+            <button class="cerrar" (click)="cerrarDetalle()">×</button>
+
+            <div class="detalle-titulo">
+                <span class="estado-badge-lg" [ngClass]="obtenerClaseEstado(partidoSeleccionado.resultado)">
+          {{ obtenerEstado(partidoSeleccionado.resultado) }}
+        </span>
+                <h2>Orense SC vs {{ partidoSeleccionado.rival }}</h2>
+                <p class="torneo-label">{{ partidoSeleccionado.torneo }}</p>
+            </div>
+
+            <div class="resultado-grande" *ngIf="partidoSeleccionado.resultado">
+                {{ partidoSeleccionado.resultado }}
+            </div>
+
+            <div class="detalle-grid">
+                <div>
+                    <strong>Fecha</strong>
+                    <span>{{ partidoSeleccionado.fecha | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div>
+                    <strong>Condición</strong>
+                    <span>{{ partidoSeleccionado.condicion }}</span>
+                </div>
+                <div class="full-width">
+                    <strong>Lugar</strong>
+                    <span>{{ partidoSeleccionado.lugar }}</span>
+                </div>
+                <div class="full-width">
+                    <strong>Torneo</strong>
+                    <span>{{ partidoSeleccionado.torneo }}</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRMACIÓN ELIMINACIÓN -->
+    <div class="detalle-fondo" *ngIf="mostrarConfirmacion">
+        <div class="confirmacion-card">
+            <div class="confirmacion-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h3>¿Eliminar partido?</h3>
+            <p>Esta acción no se puede deshacer. El partido será eliminado permanentemente del sistema.</p>
+            <div class="confirmacion-botones">
+                <button class="btn btn-danger" (click)="eliminarPartido()">Sí, eliminar</button>
+                <button class="btn btn-secondary" (click)="cancelarEliminar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+</div>

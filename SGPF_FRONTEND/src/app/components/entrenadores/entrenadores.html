@@ -1,0 +1,134 @@
+<div class="entrenadores-container">
+
+  <div class="header">
+    <div>
+      <h1>Gestión de entrenadores</h1>
+      <p>Registro y administración del cuerpo técnico de la plantilla principal.</p>
+    </div>
+
+    <button class="btn btn-success" (click)="abrirFormulario()">
+      Nuevo entrenador
+    </button>
+  </div>
+
+  <div class="formulario-card" *ngIf="mostrarFormulario">
+    <h3>{{ editando ? 'Editar entrenador' : 'Registrar entrenador' }}</h3>
+
+    <form>
+      <div class="row g-3">
+
+        <div class="col-md-6">
+          <label>Nombres</label>
+          <input type="text" class="form-control" [(ngModel)]="entrenador.nombres" name="nombres">
+        </div>
+
+        <div class="col-md-6">
+          <label>Apellidos</label>
+          <input type="text" class="form-control" [(ngModel)]="entrenador.apellidos" name="apellidos">
+        </div>
+
+        <div class="col-md-4">
+          <label>Cédula</label>
+          <input type="text" class="form-control" [(ngModel)]="entrenador.cedula" name="cedula">
+        </div>
+
+        <div class="col-md-4">
+          <label>Teléfono</label>
+          <input type="text" class="form-control" [(ngModel)]="entrenador.telefono" name="telefono">
+        </div>
+
+        <div class="col-md-4">
+          <label>Cargo</label>
+          <input type="text" class="form-control" [(ngModel)]="entrenador.cargo" name="cargo">
+        </div>
+
+        <div class="col-md-6">
+          <label>Correo</label>
+          <input type="email" class="form-control" [(ngModel)]="entrenador.correo" name="correo">
+        </div>
+
+        <div class="col-md-6">
+          <label>URL de foto</label>
+          <input type="text" class="form-control" [(ngModel)]="entrenador.foto" name="foto">
+        </div>
+
+      </div>
+
+      <div class="botones-formulario">
+        <button type="button" class="btn btn-success" (click)="guardarEntrenador()">
+          {{ editando ? 'Guardar cambios' : 'Guardar entrenador' }}
+        </button>
+
+        <button type="button" class="btn btn-secondary" (click)="cerrarFormulario()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="entrenadores-grid">
+    <div class="entrenador-card" *ngFor="let entrenador of entrenadores; let i = index">
+
+      <div class="foto-container">
+        <img [src]="entrenador.foto" alt="Foto del entrenador">
+      </div>
+
+      <div class="entrenador-info">
+        <h3>{{ entrenador.nombres }} {{ entrenador.apellidos }}</h3>
+        <p>{{ entrenador.cargo }}</p>
+
+        <div class="datos-rapidos">
+            <h1>Datos Rápidos</h1>
+          <span>{{ entrenador.telefono }}</span>
+          <span>{{ entrenador.cedula }}</span>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button class="btn btn-outline-success btn-sm" (click)="verMas(entrenador)">
+          Ver más
+        </button>
+
+        <button class="btn btn-warning btn-sm" (click)="editarEntrenador(i)">
+          Editar
+        </button>
+
+        <button class="btn btn-danger btn-sm" (click)="eliminarEntrenador(i)">
+          Eliminar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="detalle-fondo" *ngIf="mostrarDetalle && entrenadorSeleccionado">
+    <div class="detalle-card">
+
+      <button class="cerrar" (click)="cerrarDetalle()">×</button>
+
+      <img [src]="entrenadorSeleccionado.foto" alt="Foto del entrenador">
+
+      <h2>{{ entrenadorSeleccionado.nombres }} {{ entrenadorSeleccionado.apellidos }}</h2>
+      <p class="cargo">{{ entrenadorSeleccionado.cargo }}</p>
+
+      <div class="detalle-grid">
+        <div>
+          <strong>Cédula</strong>
+          <span>{{ entrenadorSeleccionado.cedula }}</span>
+        </div>
+
+        <div>
+          <strong>Teléfono</strong>
+          <span>{{ entrenadorSeleccionado.telefono }}</span>
+        </div>
+
+        <div class="detalle-correo">
+          <strong>Correo</strong>
+          <span>{{ entrenadorSeleccionado.correo }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

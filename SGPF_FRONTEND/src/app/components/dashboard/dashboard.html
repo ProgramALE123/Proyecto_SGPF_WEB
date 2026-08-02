@@ -1,0 +1,156 @@
+<div class="container-fluid bg-light min-vh-100 p-4">
+
+    <!-- HEADER -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold text-uppercase mb-1 text-success">Panel de inicio</h2>
+                <p class="text-muted mb-0">S.G.P.F. Orense SC — Sistema de Gestión de Plantilla de Fútbol</p>
+            </div>
+            <a routerLink="/alineaciones" class="btn btn-success"><i class="bi bi-diagram-3 me-1"></i> Preparar alineación</a>
+        </div>
+    </div>
+
+    <div class="alerta-partido" *ngIf="proximosPartidos[0] as proximo">
+      <div class="pulso"><i class="bi bi-bell-fill"></i></div>
+      <div><small>PRÓXIMO COMPROMISO</small><strong>Orense SC vs {{ proximo.rival }}</strong><span>{{ proximo.fecha | date:'dd/MM/yyyy' }} · {{ proximo.lugar }}</span></div>
+      <div class="cuenta"><strong>{{ diasPara(proximo.fecha) }}</strong><span>días</span></div>
+    </div>
+
+    <!-- TARJETAS RESUMEN -->
+    <div class="resumen-grid mb-4">
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 card-resumen">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase mb-2" style="font-size:13px;">Total jugadores</p>
+                    <h1 class="fw-bold text-success mb-0">{{ totalJugadores }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 card-resumen">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase mb-2" style="font-size:13px;">Total entrenadores</p>
+                    <h1 class="fw-bold text-success mb-0">{{ totalEntrenadores }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100 card-resumen">
+                <div class="card-body">
+                    <p class="text-muted text-uppercase mb-2" style="font-size:13px;">Partidos registrados</p>
+                    <h1 class="fw-bold text-success mb-0">{{ totalPartidos }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILA PRINCIPAL -->
+    <div class="card border-0 shadow-sm mb-4 disponibilidad"><div class="card-body d-flex align-items-center gap-4"><div><small class="text-muted">DISPONIBILIDAD DE PLANTILLA</small><h2>{{ jugadoresDisponibles }}/{{ totalJugadores }}</h2></div><div class="flex-grow-1"><div class="progress"><div class="progress-bar bg-success" [style.width.%]="totalJugadores ? jugadoresDisponibles*100/totalJugadores : 0"></div></div><small class="text-muted">{{ jugadoresNoDisponibles }} jugadores requieren atención</small></div><a routerLink="/jugadores" class="btn btn-outline-success btn-sm">Revisar estados</a></div></div>
+
+    <div class="row g-4">
+
+        <!-- ÚLTIMOS PARTIDOS JUGADOS -->
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold text-uppercase text-success mb-0">Últimos partidos</h5>
+                        <a routerLink="/partidos" class="btn btn-outline-success btn-sm">Ver todos</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-success">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Rival</th>
+                                    <th>Condición</th>
+                                    <th>Torneo</th>
+                                    <th class="text-center">Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let p of ultimosPartidos">
+                                    <td>{{ p.fecha | date:'dd/MM/yyyy' }}</td>
+                                    <td class="fw-semibold">{{ p.rival }}</td>
+                                    <td>
+                                        <span class="badge" [ngClass]="p.condicion === 'Local' ? 'bg-success' : 'condicion-visitante'">
+                      {{ p.condicion }}
+                    </span>
+                                    </td>
+                                    <td class="text-muted" style="font-size:13px;">{{ p.torneo }}</td>
+                                    <td class="text-center">
+                                        <span [ngClass]="obtenerClaseBadge(p.resultado)">
+                      {{ p.resultado || '-' }}
+                    </span>
+                                        <div style="font-size:11px; color:#888; margin-top:2px;">
+                                            {{ obtenerEstado(p.resultado) }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="ultimosPartidos.length === 0">
+                                    <td colspan="5" class="text-center text-muted py-3">No hay partidos jugados aún.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRÓXIMOS PARTIDOS -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold text-uppercase text-success mb-0">Próximos partidos</h5>
+                        <a routerLink="/partidos" class="btn btn-outline-success btn-sm">Ver todos</a>
+                    </div>
+
+                    <div *ngFor="let p of proximosPartidos" class="proximo-partido-item d-flex align-items-center gap-3 mb-3 p-3 rounded" [ngClass]="urgenciaPartido(p.fecha)">
+                        <div class="fecha-bloque text-center">
+                            <div class="dia fw-bold">{{ p.fecha | date:'dd' }}</div>
+                            <div class="mes text-uppercase">{{ p.fecha | date:'MMM' }}</div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold" style="color:#123d25;">vs {{ p.rival }}</div>
+                            <div class="text-muted" style="font-size:13px;">
+                                <i class="bi bi-geo-alt me-1"></i>{{ p.lugar }}
+                            </div>
+                            <div class="text-muted" style="font-size:12px;">
+                                <i class="bi bi-trophy me-1"></i>{{ p.torneo }}
+                            </div>
+                        </div>
+                        <span class="badge" [ngClass]="p.condicion === 'Local' ? 'bg-success' : 'condicion-visitante'">
+              {{ p.condicion }}
+                        </span>
+                        <span class="dias-chip">{{ diasPara(p.fecha) }} días</span>
+                    </div>
+
+                    <div *ngIf="proximosPartidos.length === 0" class="text-center text-muted py-3">
+                        No hay partidos programados.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÚLTIMOS JUGADORES -->
+        <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold text-uppercase text-success mb-3">Últimos jugadores</h5>
+
+                    <div class="d-flex justify-content-between align-items-center border rounded p-3 mb-3" *ngFor="let jugador of ultimosJugadores">
+                        <img [src]="jugador.foto" class="avatar-dashboard" alt="">
+                        <div>
+                            <h6 class="fw-bold mb-1">{{ jugador.nombres }} {{ jugador.apellidos }}</h6>
+                            <small class="text-muted">{{ jugador.posicion }}</small>
+                        </div>
+                        <div class="text-end"><span class="badge bg-warning text-dark rounded-pill">#{{ jugador.camiseta }}</span><small class="d-block mt-1" [class.text-success]="jugador.estado==='Disponible'" [class.text-danger]="jugador.estado==='Lesionado'">{{ jugador.estado }}</small></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

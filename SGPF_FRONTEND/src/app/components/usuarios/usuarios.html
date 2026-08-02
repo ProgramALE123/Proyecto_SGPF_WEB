@@ -1,0 +1,175 @@
+<div class="usuarios-container">
+
+  <div class="header">
+    <div>
+      <h1>Gestión de usuarios</h1>
+      <p>Administración de usuarios, roles y permisos del sistema.</p>
+    </div>
+    <button class="btn btn-success" (click)="openCreate()">
+      Nuevo usuario
+    </button>
+  </div>
+
+  <div *ngIf="successMsg()" class="alert alert-success alert-dismissible fade show mx-0 mb-3" role="alert">
+    <i class="bi bi-check-circle-fill me-1"></i>{{ successMsg() }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" (click)="successMsg.set('')"></button>
+  </div>
+  <div *ngIf="errorMsg()" class="alert alert-danger alert-dismissible fade show mx-0 mb-3" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ errorMsg() }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" (click)="errorMsg.set('')"></button>
+  </div>
+
+  <div class="toolbar-card">
+    <div class="input-group" style="max-width: 320px">
+      <span class="input-group-text bg-white">
+        <i class="bi bi-search"></i>
+      </span>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar usuario..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers">
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <img class="avatar-circle" [src]="user.foto" [alt]="user.username" />
+                <span>{{ user.username }}</span>
+              </div>
+            </td>
+            <td>{{ user.nombre }}</td>
+            <td>
+              <span class="badge" [class]="getRoleBadgeClass(user.role)">
+                {{ getRoleLabel(user.role) }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [class.bg-success]="user.activo" [class.bg-danger]="!user.activo">
+                {{ user.activo ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="text-end">
+              <button class="btn btn-sm btn-outline-secondary me-1" (click)="openEdit(user)" title="Editar usuario">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" (click)="confirmDelete(user)" title="Eliminar usuario">
+                <i class="bi bi-trash-fill"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="filteredUsers.length === 0" class="text-center py-5 empty-state">
+        <i class="bi bi-inbox display-4 d-block mb-2"></i>
+        No se encontraron usuarios
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  #editModal
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="editModalTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editModalTitle" style="color: #123d25;">
+          <i class="bi" [class.bi-person-plus-fill]="!editingUser()" [class.bi-pencil-fill]="editingUser()"></i>
+          {{ editingUser() ? 'Editar usuario' : 'Nuevo usuario' }}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="inputNombre" class="form-label" style="color: #333; font-weight: bold;">Correo electrónico</label>
+          <input
+            #nameInput
+            type="text"
+            id="inputNombre"
+            class="form-control"
+            [(ngModel)]="form.nombre"
+            placeholder="usuario@correo.com"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="inputUsername" class="form-label" style="color: #333; font-weight: bold;">Usuario</label>
+          <input type="text" id="inputUsername" class="form-control" [(ngModel)]="form.username" placeholder="Nombre de usuario" />
+        </div>
+        <div class="mb-3">
+          <label for="inputPassword" class="form-label" style="color: #333; font-weight: bold;">
+            {{ editingUser() ? 'Nueva contraseña (dejar vacío para mantener)' : 'Contraseña' }}
+          </label>
+          <input type="password" id="inputPassword" class="form-control" [(ngModel)]="form.password" placeholder="Contraseña" autocomplete="new-password" />
+        </div>
+        <div class="mb-3">
+          <label for="inputRole" class="form-label" style="color: #333; font-weight: bold;">Rol</label>
+          <select id="inputRole" class="form-select" [(ngModel)]="form.role">
+            <option *ngFor="let r of roles" [value]="r.value">{{ r.label }}</option>
+          </select>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="activoSwitch" [(ngModel)]="form.activo" />
+          <label class="form-check-label" for="activoSwitch">Usuario activo</label>
+        </div>
+        <div *ngIf="errorMsg()" class="alert alert-danger mt-3 py-2 mb-0">
+          <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ errorMsg() }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="save()">
+          {{ editingUser() ? 'Guardar cambios' : 'Crear usuario' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  #deleteModal
+  class="modal fade"
+  tabindex="-1"
+  aria-labelledby="deleteModalTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteModalTitle" style="color: #123d25;">
+          <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>Confirmar eliminación
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-1">¿Está seguro de eliminar al usuario <strong>{{ deletingUser()?.nombre }}</strong>?</p>
+        <p class="text-muted small mb-0">Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="deleteUser()">
+          <i class="bi bi-trash-fill me-1"></i>Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
