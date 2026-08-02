@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pool } from './connection.js';
+import { hashPassword } from '../utils/passwords.js';
 
 const directory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../sql');
 const scripts = [
@@ -46,6 +47,24 @@ try {
     await pool.query(sql);
     await pool.query('INSERT INTO sgpf_migrations (script) VALUES ($1)', [script]);
     console.log(`Base de datos: ${script} aplicado`);
+  }
+
+  const initialUsers = [
+    { username: 'admin', email: 'admin@sgpf.local', password: 'Admin123!', role: 'presidente_club' },
+    { username: 'director', email: 'director@sgpf.local', password: 'Director123!', role: 'director_tecnico' },
+    { username: 'secretaria', email: 'secretaria@sgpf.local', password: 'Secretaria123!', role: 'secretario_tecnico' }
+  ];
+
+  for (const user of initialUsers) {
+    const exists = await pool.query('SELECT 1 FROM usuarios WHERE lower(nombre_usuario) = lower($1)', [user.username]);
+    if (exists.rowCount) continue;
+    const passwordHash = await hashPassword(user.password);
+    await pool.query(
+      `INSERT INTO usuarios (rol_id, nombre_usuario, correo, clave_hash, activo)
+       SELECT id, $1, $2, $3, TRUE FROM roles WHERE nombre = $4`,
+      [user.username, user.email, passwordHash, user.role]
+    );
+    console.log(`Usuario inicial creado: ${user.username}`);
   }
 } catch (error) {
   console.error('No se pudo instalar la base de datos:', error.message);
